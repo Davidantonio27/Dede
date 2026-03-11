@@ -1,0 +1,494 @@
+diff --git a/client/index.html b/client/index.html
+index 7404617d35390035b41e6b586983ccf8424d8e6d..98f14571c7df8239df248eb36bdbf90ffc519c64 100644
+--- a/client/index.html
++++ b/client/index.html
+@@ -1,23 +1,480 @@
+ <!DOCTYPE html>
+ <html lang="pt-BR">
+ <head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++  <title>DedeStream | Todos os streamings em um só lugar</title>
++  <link rel="icon" type="image/png" href="/favicon.png" />
++  <link rel="preconnect" href="https://fonts.googleapis.com" />
++  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
++  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Outfit:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
++  <style>
++    :root {
++      --bg: #07070b;
++      --card: #12121a;
++      --card-soft: #181824;
++      --text: #f5f6ff;
++      --text-soft: #a9aec7;
++      --brand: #e50914;
++      --brand-2: #ff2f3b;
++      --ok: #25d366;
++      --line: rgba(255, 255, 255, 0.08);
++      --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
++      --radius: 16px;
++      --radius-lg: 24px;
++    }
+ 
+-  <title>Dedestream</title>
++    * { box-sizing: border-box; }
+ 
+-  <link rel="icon" type="image/png" href="/favicon.png" />
++    html, body {
++      margin: 0;
++      padding: 0;
++      font-family: 'DM Sans', sans-serif;
++      color: var(--text);
++      background: radial-gradient(circle at 10% -10%, #2a0f17 0%, transparent 35%),
++                  radial-gradient(circle at 95% 10%, #1a2247 0%, transparent 40%),
++                  var(--bg);
++      scroll-behavior: smooth;
++    }
+ 
+-  <!-- FONTES -->
+-  <link rel="preconnect" href="https://fonts.googleapis.com">
+-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
++    img { max-width: 100%; display: block; }
+ 
+-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+-</head>
++    a { color: inherit; text-decoration: none; }
++
++    .container {
++      width: min(1180px, 92%);
++      margin: 0 auto;
++    }
++
++    .section { padding: 72px 0; }
++
++    h1, h2, h3 { font-family: 'Outfit', sans-serif; margin: 0; line-height: 1.2; }
++
++    p { margin: 0; color: var(--text-soft); line-height: 1.6; }
++
++    .pill {
++      display: inline-flex;
++      align-items: center;
++      gap: 8px;
++      padding: 7px 14px;
++      border-radius: 999px;
++      background: rgba(229, 9, 20, 0.14);
++      color: #ffd6d8;
++      font-size: 0.85rem;
++      border: 1px solid rgba(229, 9, 20, 0.4);
++    }
++
++    .btn {
++      border: 0;
++      cursor: pointer;
++      font-weight: 700;
++      border-radius: 12px;
++      padding: 14px 24px;
++      display: inline-flex;
++      align-items: center;
++      justify-content: center;
++      gap: 8px;
++      transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
++    }
++
++    .btn-primary {
++      background: linear-gradient(135deg, var(--brand), var(--brand-2));
++      color: #fff;
++      box-shadow: 0 12px 35px rgba(229, 9, 20, .35);
++    }
++
++    .btn-wa {
++      background: linear-gradient(135deg, #25d366, #1faa4f);
++      color: #07150d;
++      font-weight: 800;
++    }
++
++    .btn:hover { transform: translateY(-2px); }
++
++    header {
++      position: sticky;
++      top: 0;
++      z-index: 30;
++      backdrop-filter: blur(8px);
++      background: rgba(7, 7, 11, 0.75);
++      border-bottom: 1px solid var(--line);
++    }
++
++    .nav {
++      min-height: 76px;
++      display: flex;
++      align-items: center;
++      justify-content: space-between;
++      gap: 18px;
++    }
++
++    .logo {
++      font-family: 'Outfit', sans-serif;
++      font-size: 1.6rem;
++      font-weight: 900;
++      letter-spacing: 0.3px;
++      color: #fff;
++    }
++
++    .logo span { color: var(--brand); }
++
++    .menu {
++      display: flex;
++      align-items: center;
++      gap: 22px;
++      color: #d9ddf6;
++      font-size: 0.95rem;
++      flex-wrap: wrap;
++      justify-content: center;
++    }
++
++    .hero {
++      padding: 88px 0 64px;
++      text-align: center;
++    }
++
++    .hero h1 {
++      font-size: clamp(2rem, 5vw, 4rem);
++      margin: 20px auto 12px;
++      max-width: 820px;
++    }
++
++    .hero p { max-width: 740px; margin: 0 auto 30px; font-size: clamp(1rem, 2vw, 1.25rem); }
++
++    .hero-grid {
++      margin-top: 42px;
++      display: grid;
++      grid-template-columns: repeat(4, 1fr);
++      gap: 14px;
++    }
++
++    .hero-grid img {
++      border-radius: 14px;
++      border: 1px solid var(--line);
++      transition: transform .35s ease, box-shadow .35s ease;
++      box-shadow: var(--shadow);
++      aspect-ratio: 2/3;
++      object-fit: cover;
++    }
++
++    .hero-grid img:hover {
++      transform: translateY(-6px) scale(1.02);
++      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.55);
++    }
++
++    .streaming-logos,
++    .features,
++    .plans,
++    .steps,
++    .proof,
++    .sports-grid,
++    .catalog-grid {
++      display: grid;
++      gap: 16px;
++    }
++
++    .streaming-logos { grid-template-columns: repeat(5, minmax(120px, 1fr)); margin-bottom: 20px; }
++
++    .logo-card,
++    .card {
++      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
++      border: 1px solid var(--line);
++      border-radius: var(--radius);
++      padding: 18px;
++      text-align: center;
++      box-shadow: var(--shadow);
++      transition: transform .25s ease, border-color .25s ease;
++    }
++
++    .logo-card:hover,
++    .card:hover { transform: translateY(-3px); border-color: rgba(255, 255, 255, 0.22); }
++
++    .catalog-grid { grid-template-columns: repeat(7, minmax(120px, 1fr)); }
++
++    .poster {
++      overflow: hidden;
++      border-radius: 14px;
++      border: 1px solid var(--line);
++      background: var(--card);
++      position: relative;
++      transition: transform .3s ease;
++    }
++
++    .poster:hover { transform: translateY(-6px); }
+ 
++    .poster img { width: 100%; height: 100%; aspect-ratio: 2/3; object-fit: cover; }
++
++    .poster span {
++      position: absolute;
++      left: 0;
++      right: 0;
++      bottom: 0;
++      background: linear-gradient(to top, rgba(0,0,0,.9), transparent);
++      padding: 24px 12px 10px;
++      font-size: .86rem;
++      font-weight: 700;
++    }
++
++    .sports-grid { grid-template-columns: repeat(4, 1fr); }
++
++    .sport {
++      border-radius: var(--radius);
++      overflow: hidden;
++      position: relative;
++      border: 1px solid var(--line);
++    }
++
++    .sport img { aspect-ratio: 16/10; object-fit: cover; filter: brightness(.75); }
++
++    .sport strong {
++      position: absolute;
++      left: 14px;
++      bottom: 14px;
++      font-family: 'Outfit', sans-serif;
++      font-size: 1.15rem;
++      letter-spacing: .3px;
++    }
++
++    .features { grid-template-columns: repeat(3, 1fr); }
++
++    .plans { grid-template-columns: repeat(3, 1fr); }
++
++    .plan {
++      background: var(--card-soft);
++      border: 1px solid var(--line);
++      border-radius: var(--radius-lg);
++      padding: 26px;
++      box-shadow: var(--shadow);
++      display: flex;
++      flex-direction: column;
++      gap: 14px;
++    }
++
++    .plan .price {
++      font-family: 'Outfit', sans-serif;
++      font-size: 2rem;
++      color: #fff;
++      font-weight: 800;
++    }
++
++    .steps { grid-template-columns: repeat(3, 1fr); }
++
++    .step-n {
++      width: 34px;
++      height: 34px;
++      border-radius: 50%;
++      display: grid;
++      place-items: center;
++      background: rgba(229, 9, 20, .2);
++      color: #fff;
++      font-weight: 800;
++      margin-bottom: 10px;
++    }
++
++    .proof { grid-template-columns: repeat(3, 1fr); }
++
++    .cta {
++      text-align: center;
++      background: linear-gradient(120deg, rgba(229,9,20,.22), rgba(38,52,117,.25));
++      border: 1px solid var(--line);
++      border-radius: 28px;
++      padding: 58px 22px;
++    }
++
++    footer {
++      border-top: 1px solid var(--line);
++      margin-top: 70px;
++      padding: 28px 0 42px;
++      color: #9ba1bf;
++    }
++
++    .footer-wrap {
++      display: flex;
++      align-items: center;
++      justify-content: space-between;
++      gap: 12px;
++      flex-wrap: wrap;
++    }
++
++    @media (max-width: 980px) {
++      .streaming-logos { grid-template-columns: repeat(3, 1fr); }
++      .catalog-grid { grid-template-columns: repeat(4, minmax(110px, 1fr)); }
++      .sports-grid, .features, .plans, .steps, .proof { grid-template-columns: repeat(2, 1fr); }
++      .hero-grid { grid-template-columns: repeat(2, 1fr); }
++      .menu { display: none; }
++    }
++
++    @media (max-width: 620px) {
++      .section { padding: 56px 0; }
++      .nav .btn-wa { padding: 10px 14px; font-size: .82rem; }
++      .streaming-logos, .sports-grid, .features, .plans, .steps, .proof, .catalog-grid { grid-template-columns: 1fr; }
++      .hero-grid { grid-template-columns: 1fr 1fr; }
++      .hero-grid img:nth-child(3), .hero-grid img:nth-child(4) { display: none; }
++      .cta { padding: 42px 16px; }
++    }
++  </style>
++</head>
+ <body>
+-  <div id="root"></div>
++  <header>
++    <div class="container nav">
++      <a class="logo" href="#inicio">Dede<span>Stream</span></a>
++      <nav class="menu">
++        <a href="#catalogo">Catálogo</a>
++        <a href="#esportes">Esportes</a>
++        <a href="#planos">Planos</a>
++        <a href="#funciona">Como funciona</a>
++        <a href="#contato">Contato</a>
++      </nav>
++      <a class="btn btn-wa" href="https://wa.me/5500000000000" target="_blank" rel="noreferrer">WhatsApp</a>
++    </div>
++  </header>
++
++  <main id="inicio">
++    <section class="hero container">
++      <span class="pill">Streaming Premium • Teste imediato</span>
++      <h1>Todos os streamings em um só lugar</h1>
++      <p>Filmes, séries, futebol ao vivo e milhares de canais</p>
++      <a class="btn btn-primary" href="https://wa.me/5500000000000" target="_blank" rel="noreferrer">Testar agora</a>
++
++      <div class="hero-grid">
++        <img src="https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg" alt="Avengers" />
++        <img src="https://image.tmdb.org/t/p/w500/rJ4Y5Agm6QvPW2K5B8G8HfT7n0b.jpg" alt="John Wick" />
++        <img src="https://image.tmdb.org/t/p/w500/kyeqWdyUXW608qlYkRqosgbbJyK.jpg" alt="Avatar" />
++        <img src="https://image.tmdb.org/t/p/w500/6eAie4fWQdXh7f7M4sM8NfM4hOW.jpg" alt="Fast and Furious" />
++      </div>
++    </section>
++
++    <section class="section">
++      <div class="container">
++        <h2>Quanto custa assinar tudo separadamente?</h2>
++        <div class="streaming-logos" style="margin-top:20px;">
++          <div class="logo-card">Netflix</div>
++          <div class="logo-card">Prime Video</div>
++          <div class="logo-card">Disney+</div>
++          <div class="logo-card">HBO Max</div>
++          <div class="logo-card">Canais de Esporte</div>
++        </div>
++        <p>Milhares de brasileiros gastam mais de <strong style="color:#fff;">R$300/mês</strong> para acompanhar todos os conteúdos e campeonatos.</p>
++        <p style="margin-top:10px; font-size:1.15rem; color:#fff;"><strong>DedeStream reúne tudo em um só lugar.</strong></p>
++      </div>
++    </section>
++
++    <section class="section" id="catalogo">
++      <div class="container">
++        <h2>Catálogo completo com os títulos mais buscados</h2>
++        <p style="margin:8px 0 22px;">Filmes, séries e lançamentos com atualização constante.</p>
++        <div class="catalog-grid">
++          <article class="poster"><img src="https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg" alt="Avengers" /><span>Avengers</span></article>
++          <article class="poster"><img src="https://image.tmdb.org/t/p/w500/rJ4Y5Agm6QvPW2K5B8G8HfT7n0b.jpg" alt="John Wick" /><span>John Wick</span></article>
++          <article class="poster"><img src="https://image.tmdb.org/t/p/w500/kyeqWdyUXW608qlYkRqosgbbJyK.jpg" alt="Avatar" /><span>Avatar</span></article>
++          <article class="poster"><img src="https://image.tmdb.org/t/p/w500/6eAie4fWQdXh7f7M4sM8NfM4hOW.jpg" alt="Fast and Furious" /><span>Fast & Furious</span></article>
++          <article class="poster"><img src="https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg" alt="Stranger Things" /><span>Stranger Things</span></article>
++          <article class="poster"><img src="https://image.tmdb.org/t/p/w500/uKvVjHNqB5VmOrdxqAt2F7J78ED.jpg" alt="The Last of Us" /><span>The Last of Us</span></article>
++          <article class="poster"><img src="https://image.tmdb.org/t/p/w500/1XS1oqL89opfnbLl8WnZY1O1uJx.jpg" alt="Game of Thrones" /><span>Game of Thrones</span></article>
++        </div>
++      </div>
++    </section>
++
++    <section class="section" id="esportes">
++      <div class="container">
++        <h2>Esportes ao vivo sem travamentos</h2>
++        <p style="margin:8px 0 22px;">Acompanhe os principais eventos em tempo real.</p>
++        <div class="sports-grid">
++          <article class="sport"><img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=900&q=60" alt="Champions League" /><strong>Champions League</strong></article>
++          <article class="sport"><img src="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&w=900&q=60" alt="Premier League" /><strong>Premier League</strong></article>
++          <article class="sport"><img src="https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?auto=format&fit=crop&w=900&q=60" alt="UFC" /><strong>UFC</strong></article>
++          <article class="sport"><img src="https://images.unsplash.com/photo-1552667466-07770ae110d0?auto=format&fit=crop&w=900&q=60" alt="Formula 1" /><strong>Formula 1</strong></article>
++        </div>
++      </div>
++    </section>
++
++    <section class="section">
++      <div class="container">
++        <h2>Por que assinar DedeStream?</h2>
++        <div class="features" style="margin-top:20px;">
++          <article class="card"><h3>+10.000 canais</h3></article>
++          <article class="card"><h3>Filmes e séries atualizados</h3></article>
++          <article class="card"><h3>Futebol ao vivo</h3></article>
++          <article class="card"><h3>Qualidade HD e Full HD</h3></article>
++          <article class="card"><h3>Compatível com Smart TV, celular, TV Box e Fire Stick</h3></article>
++          <article class="card"><h3>Suporte rápido via WhatsApp</h3></article>
++        </div>
++      </div>
++    </section>
++
++    <section class="section">
++      <div class="container card" style="padding:30px; text-align:center;">
++        <h2>Indique um amigo e ganhe 1 mês grátis</h2>
++        <p style="margin-top:10px;">Se o seu amigo assinar, você recebe <strong style="color:#fff;">1 mês gratuito</strong> automaticamente.</p>
++      </div>
++    </section>
++
++    <section class="section" id="planos">
++      <div class="container">
++        <h2>Escolha seu plano</h2>
++        <div class="plans" style="margin-top:20px;">
++          <article class="plan">
++            <h3>Mensal</h3>
++            <div class="price">R$ 29,90</div>
++            <p>Acesso completo por 30 dias.</p>
++            <a class="btn btn-wa" href="https://wa.me/5500000000000?text=Tenho%20interesse%20no%20plano%20Mensal" target="_blank" rel="noreferrer">Assinar via WhatsApp</a>
++          </article>
++          <article class="plan" style="border-color:rgba(229,9,20,.5);">
++            <h3>Trimestral</h3>
++            <div class="price">R$ 79,90</div>
++            <p>Melhor custo-benefício por 3 meses.</p>
++            <a class="btn btn-wa" href="https://wa.me/5500000000000?text=Tenho%20interesse%20no%20plano%20Trimestral" target="_blank" rel="noreferrer">Assinar via WhatsApp</a>
++          </article>
++          <article class="plan">
++            <h3>Anual</h3>
++            <div class="price">R$ 249,90</div>
++            <p>12 meses com o menor valor mensal.</p>
++            <a class="btn btn-wa" href="https://wa.me/5500000000000?text=Tenho%20interesse%20no%20plano%20Anual" target="_blank" rel="noreferrer">Assinar via WhatsApp</a>
++          </article>
++        </div>
++      </div>
++    </section>
++
++    <section class="section" id="funciona">
++      <div class="container">
++        <h2>Como funciona</h2>
++        <div class="steps" style="margin-top:20px;">
++          <article class="card" style="text-align:left;"><div class="step-n">1</div><h3>Escolha seu plano</h3><p>Selecione a opção ideal para o seu perfil.</p></article>
++          <article class="card" style="text-align:left;"><div class="step-n">2</div><h3>Receba login via WhatsApp</h3><p>Nossa equipe envia tudo rapidamente no seu WhatsApp.</p></article>
++          <article class="card" style="text-align:left;"><div class="step-n">3</div><h3>Comece a assistir imediatamente</h3><p>Ative em poucos minutos e aproveite todos os conteúdos.</p></article>
++        </div>
++      </div>
++    </section>
++
++    <section class="section">
++      <div class="container">
++        <h2>Prova social</h2>
++        <div class="proof" style="margin-top:20px;">
++          <article class="card"><h3>+2000 clientes</h3></article>
++          <article class="card"><h3>99% estabilidade</h3></article>
++          <article class="card"><h3>Suporte via WhatsApp</h3></article>
++        </div>
++      </div>
++    </section>
++
++    <section class="section">
++      <div class="container cta">
++        <h2>Chega de pagar várias assinaturas separadas.</h2>
++        <p style="margin:12px auto 24px; max-width:620px;">Tenha entretenimento completo com qualidade e praticidade em um só serviço.</p>
++        <a class="btn btn-primary" href="https://wa.me/5500000000000" target="_blank" rel="noreferrer">Quero começar agora</a>
++      </div>
++    </section>
++  </main>
+ 
+-  <script type="module" src="/src/main.tsx"></script>
++  <footer id="contato">
++    <div class="container footer-wrap">
++      <div>
++        <strong style="color:#fff;">DedeStream</strong><br />
++        Contato: atendimento@dedestream.com
++      </div>
++      <a class="btn btn-wa" href="https://wa.me/5500000000000" target="_blank" rel="noreferrer">WhatsApp</a>
++      <small>© 2026 DedeStream. Todos os direitos reservados.</small>
++    </div>
++  </footer>
+ </body>
+ </html>
